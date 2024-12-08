@@ -29,8 +29,6 @@ class WdDio with DioMixin implements Dio {
     this.debug = false,
   }) {
     this.options = options ?? BaseOptions();
-    // 禁止重定向
-    this.options.followRedirects = false;
 
     // 状态码错误视为成功
     this.options.validateStatus = (status) => true;
@@ -132,7 +130,7 @@ class WdDio with DioMixin implements Dio {
         onReceiveProgress: onReceiveProgress,
         cancelToken: cancelToken,
       );
-    } else if (resp.statusCode == 302) {
+    } else if (resp.statusCode == 301 || resp.statusCode == 302 || resp.statusCode == 303 || resp.statusCode == 307 || resp.statusCode == 308) {
       // 文件位置被重定向到新路径
       if (resp.headers.map.containsKey('location')) {
         List<String>? list = resp.headers.map['location'];
@@ -249,7 +247,7 @@ class WdDio with DioMixin implements Dio {
   }) async {
     // fix auth error
     var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
-    if (pResp.statusCode != 200) {
+    if (pResp.statusCode != 200 && pResp.statusCode != 204) {
       throw newResponseError(pResp);
     }
 
@@ -291,7 +289,7 @@ class WdDio with DioMixin implements Dio {
   }) async {
     // fix auth error
     var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
-    if (pResp.statusCode != 200) {
+    if (pResp.statusCode != 200 && pResp.statusCode != 204) {
       throw newResponseError(pResp);
     }
 
@@ -457,7 +455,7 @@ class WdDio with DioMixin implements Dio {
   }) async {
     // fix auth error
     var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
-    if (pResp.statusCode != 200) {
+    if (pResp.statusCode != 200 && pResp.statusCode != 204) {
       throw newResponseError(pResp);
     }
 
@@ -492,7 +490,7 @@ class WdDio with DioMixin implements Dio {
   }) async {
     // fix auth error
     var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
-    if (pResp.statusCode != 200) {
+    if (pResp.statusCode != 200 && pResp.statusCode != 204) {
       throw newResponseError(pResp);
     }
 
